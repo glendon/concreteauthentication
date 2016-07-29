@@ -34,9 +34,9 @@ public class JwtValidatorTest {
 
 	}
 
-	public User userSetup(String email) {
+	public User userSetup(String id) {
 		User user = new User();
-		user.setEmail(email);
+		user.setId(id);
 		return user;
 	}
 
@@ -46,8 +46,8 @@ public class JwtValidatorTest {
 
 	@Test
 	public void test_when_token_not_belongs_to_the_subject() {
-		User firstUser = userSetup("user1@test.com");
-		User secondUser = userSetup("user2@test.com");
+		User firstUser = userSetup("UUID1");
+		User secondUser = userSetup("UUID2");
 
 		String firstUserToken = generateToken(firstUser, MINUTES_DEFAULT, new Date());
 
@@ -64,7 +64,7 @@ public class JwtValidatorTest {
 				.toInstant();
 		Date expiredDate = Date.from(instant);
 
-		User user = userSetup("user1@test.com");
+		User user = userSetup("UUID1");
 		String firstUserToken = generateToken(user, MINUTES_DEFAULT, new Date());
 
 		BindException errors = new BindException(user, "user");
@@ -77,7 +77,7 @@ public class JwtValidatorTest {
 	public void test_when_token_is_valid() {
 		Date now = new Date();
 
-		User user = userSetup("user1@test.com");
+		User user = userSetup("UUID1");
 		String firstUserToken = generateToken(user, MINUTES_DEFAULT, now);
 
 		BindException errors = new BindException(user, "user");

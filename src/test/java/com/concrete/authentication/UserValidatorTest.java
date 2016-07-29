@@ -1,16 +1,17 @@
 package com.concrete.authentication;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 import com.concrete.authentication.domain.Phone;
 import com.concrete.authentication.domain.User;
@@ -21,7 +22,8 @@ import com.concrete.authentication.validators.UserValidator;
 @WebAppConfiguration
 public class UserValidatorTest {
 
-	Validator validator = new UserValidator();
+	@Autowired
+	UserValidator userValidator;
 	User user;
 
 	@Before
@@ -39,8 +41,8 @@ public class UserValidatorTest {
 
 	@Test
 	public void test_supports() {
-		assertTrue(validator.supports(User.class));
-		assertFalse(validator.supports(Object.class));
+		assertTrue(userValidator.supports(User.class));
+		assertFalse(userValidator.supports(Object.class));
 	}
 
 	@Test
@@ -49,13 +51,13 @@ public class UserValidatorTest {
 		user.setName(null);
 
 		BindException errors = new BindException(user, "user");
-		ValidationUtils.invokeValidator(validator, user, errors);
+		ValidationUtils.invokeValidator(userValidator, user, errors);
 		assertTrue(errors.hasErrors());
 
 		user.setName("");
 
 		errors = new BindException(user, "user");
-		ValidationUtils.invokeValidator(validator, user, errors);
+		ValidationUtils.invokeValidator(userValidator, user, errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -64,13 +66,13 @@ public class UserValidatorTest {
 		user.setEmail(null);
 
 		BindException errors = new BindException(user, "user");
-		ValidationUtils.invokeValidator(validator, user, errors);
+		ValidationUtils.invokeValidator(userValidator, user, errors);
 		assertTrue(errors.hasErrors());
 
 		user.setEmail("");
 
 		errors = new BindException(user, "user");
-		ValidationUtils.invokeValidator(validator, user, errors);
+		ValidationUtils.invokeValidator(userValidator, user, errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -79,7 +81,7 @@ public class UserValidatorTest {
 		user.setPassword(null);
 
 		BindException errors = new BindException(user, "user");
-		ValidationUtils.invokeValidator(validator, user, errors);
+		ValidationUtils.invokeValidator(userValidator, user, errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -88,14 +90,14 @@ public class UserValidatorTest {
 		user.getPhones().clear();
 
 		BindException errors = new BindException(user, "user");
-		ValidationUtils.invokeValidator(validator, user, errors);
+		ValidationUtils.invokeValidator(userValidator, user, errors);
 		assertTrue(errors.hasErrors());
 	}
 
 	@Test
 	public void valid_when_have_all_mandatory_fields() {
 		BindException errors = new BindException(user, "user");
-		ValidationUtils.invokeValidator(validator, user, errors);
+		ValidationUtils.invokeValidator(userValidator, user, errors);
 		assertTrue(!errors.hasErrors());
 	}
 
