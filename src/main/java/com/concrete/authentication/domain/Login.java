@@ -1,7 +1,5 @@
 package com.concrete.authentication.domain;
 
-import org.springframework.security.crypto.bcrypt.BCrypt;
-
 import com.concrete.authentication.service.PasswordService;
 
 public class Login {

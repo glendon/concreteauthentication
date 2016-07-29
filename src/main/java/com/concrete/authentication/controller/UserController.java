@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.concrete.authentication.domain.User;
-import com.concrete.authentication.json.ErrorJson;
 import com.concrete.authentication.json.UserJson;
 import com.concrete.authentication.json.ValidationErrorJson;
 import com.concrete.authentication.service.MessageResolver;
@@ -38,8 +37,6 @@ public class UserController {
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
     public @ResponseBody ResponseEntity<ValidationErrorJson> exceptionHandler(MethodArgumentNotValidException ex) {
-		ErrorJson error = new ErrorJson();       
-        error.setMensagem(ex.getMessage());
         
         ValidationErrorJson processed = ValidationErrorJson.processFieldErrors(ex.getBindingResult().getFieldErrors(), messageResolver);        
         
