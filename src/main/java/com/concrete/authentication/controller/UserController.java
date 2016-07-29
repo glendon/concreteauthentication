@@ -3,13 +3,9 @@ package com.concrete.authentication.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,10 +15,10 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.concrete.authentication.domain.User;
+import com.concrete.authentication.json.ErrorJson;
 import com.concrete.authentication.json.UserJson;
 import com.concrete.authentication.json.ValidationErrorJson;
 import com.concrete.authentication.service.MessageResolver;
@@ -41,12 +37,13 @@ public class UserController {
 	private Validator userValidator;
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody ValidationErrorJson processValidationError(MethodArgumentNotValidException ex) {
-        BindingResult result = ex.getBindingResult();
-        List<FieldError> fieldErrors = result.getFieldErrors();
- 
-        return ValidationErrorJson.processFieldErrors(fieldErrors, messageResolver);
+    public @ResponseBody ResponseEntity<ValidationErrorJson> exceptionHandler(MethodArgumentNotValidException ex) {
+		ErrorJson error = new ErrorJson();       
+        error.setMensagem(ex.getMessage());
+        
+        ValidationErrorJson processed = ValidationErrorJson.processFieldErrors(ex.getBindingResult().getFieldErrors(), messageResolver);        
+        
+        return new ResponseEntity<ValidationErrorJson>(processed, HttpStatus.BAD_REQUEST);
     }
 
 	@InitBinder

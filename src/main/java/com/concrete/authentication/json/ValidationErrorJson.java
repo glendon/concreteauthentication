@@ -29,13 +29,15 @@ public class ValidationErrorJson {
 			this.fieldErrors = fieldErrors;
 		}
 		
+		private  void add(MessageResolver messageResolver, FieldError error){
+			String localizedErrorMessage = messageResolver.resolveLocalizedErrorMessage(error);
+    		this.addFieldError(error.getField(), localizedErrorMessage);
+		}
+		
 		public static ValidationErrorJson processFieldErrors(List<FieldError> fieldErrors, MessageResolver messageResolver) {
 	        ValidationErrorJson validationErroJson = new ValidationErrorJson();
-	 
-	        for (FieldError fieldError: fieldErrors) {
-	            String localizedErrorMessage = messageResolver.resolveLocalizedErrorMessage(fieldError);
-	            validationErroJson.addFieldError(fieldError.getField(), localizedErrorMessage);
-	        }
+	        
+	        fieldErrors.forEach((error) -> validationErroJson.add(messageResolver, error));
 	 
 	        return validationErroJson;
 	    }	 	    

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.concrete.authentication.controller.exception.InvalidLoginException;
 import com.concrete.authentication.domain.Login;
 import com.concrete.authentication.domain.User;
 import com.concrete.authentication.json.UserJson;
@@ -24,12 +25,11 @@ public class LoginService {
 	@Autowired
 	private PasswordService passwordService;
 	
-	public UserJson doLogin(Login login) {
+	public UserJson doLogin(Login login) throws InvalidLoginException {
 						
 		List<User> users = userRepository.findByEmailAndPassword(login.getEmail(), login.cryptPasswordWith(passwordService).getPassword());
 		if (users == null || users.isEmpty()){
-			new RuntimeException("Usuário e/ou senha inválidos");
-			return null;
+			throw new InvalidLoginException();
 		}
 	
 		User user = users.get(0);
