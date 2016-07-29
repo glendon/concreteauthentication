@@ -6,13 +6,14 @@ import java.util.List;
 
 import com.concrete.authentication.domain.Phone;
 import com.concrete.authentication.domain.User;
+import com.concrete.authentication.utils.DateUtils;
 
 public class UserJson {
 	
 	private final String id;
-	private final Date created;
-	private final Date modified;
-	private final Date last_login;
+	private final String created;
+	private final String modified;
+	private final String last_login;
 	private final String token;
 	
 	private final String name;
@@ -24,9 +25,9 @@ public class UserJson {
 	
 	public UserJson(User user, Date lastLogin, String token) {
 		super();
-		this.created = user.getDateCreated();
-		this.modified = user.getDateModified();
-		this.last_login = lastLogin;
+		this.created = DateUtils.formatDate(user.getDateCreated());
+		this.modified = DateUtils.formatDate(user.getDateModified());
+		this.last_login = DateUtils.formatDate(lastLogin);
 		this.token = token;
 		this.email = user.getEmail();
 		this.name = user.getName();
@@ -45,15 +46,15 @@ public class UserJson {
 		return id;
 	}
 
-	public Date getCreated() {
+	public String getCreated() {
 		return created;
 	}
 
-	public Date getModified() {
+	public String getModified() {
 		return modified;
 	}
 
-	public Date getLast_login() {
+	public String getLast_login() {
 		return last_login;
 	}
 
