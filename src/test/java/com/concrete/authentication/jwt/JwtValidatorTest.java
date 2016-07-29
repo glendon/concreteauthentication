@@ -27,7 +27,7 @@ public class JwtValidatorTest {
 	public static final Integer MINUTES_DEFAULT = 30;
 
 	JwtValidator validator = new JwtValidator(SECRET_KEY);
-	JwtCreator jwtCreator = new JwtCreator("secretkey");
+	JwtCreator jwtCreator = new JwtCreator("secretkey", MINUTES_DEFAULT);
 
 	@Before
 	public void setUp() throws Exception {
@@ -41,7 +41,7 @@ public class JwtValidatorTest {
 	}
 
 	private String generateToken(User user, Integer minutes, Date date) {
-		return jwtCreator.buildJwt().createdAt(date).expiresIn(10).ownershipFor(user).thenReturn();
+		return jwtCreator.buildJwt().createdAt(date).ownershipFor(user).thenReturn();
 	}
 
 	@Test

@@ -4,7 +4,9 @@ import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import com.concrete.authentication.domain.User;
@@ -12,6 +14,7 @@ import com.concrete.authentication.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
+@Component
 public class JwtValidator {
 
 	private final String secret;
@@ -19,6 +22,7 @@ public class JwtValidator {
 	private Claims claims;
 	private Errors errors;
 
+	@Autowired
 	public JwtValidator(@Value("${app.jwt.secret}") String secret) {
 		this.secret = secret;
 	}
@@ -58,7 +62,7 @@ public class JwtValidator {
 		return this;
 	}
 
-	public void isExpiredIn(Date date) {
+	public JwtValidator isExpiredIn(Date date) {
 		Date expirationTime = claims.getExpiration();
 
 		if (expirationTime != null) {
@@ -66,10 +70,19 @@ public class JwtValidator {
 				errors.reject("msg.auth.token.authorized");
 			}
 		}
+		
+		return this;
+	}
+	
+	public Claims thenReturnClaims(){
+		if (!errors.hasErrors()){
+			return claims;
+		}
+		return null;		
 	}
 
 	private boolean validSubject(User user) {
-		return claims.getSubject().equals(user.getEmail());
+		return claims.getSubject().equals(user.getId());
 	}
 
 }

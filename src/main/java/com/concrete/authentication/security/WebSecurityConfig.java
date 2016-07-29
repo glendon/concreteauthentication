@@ -3,22 +3,53 @@ package com.concrete.authentication.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.concrete.authentication.security.AuthenticationFilter;
+
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Autowired 
+	AuthenticationFilter authenticationFilter;
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers(HttpMethod.POST, "/user").permitAll()
-				.antMatchers(HttpMethod.POST, "/login").permitAll().anyRequest().authenticated();
+//		http
+//			.authorizeRequests()
+//				.antMatchers(HttpMethod.POST, "/user").permitAll()
+//				.antMatchers(HttpMethod.POST, "/login").permitAll()
+//				.anyRequest().authenticated()	;
+		
+		/*	.and()
+				//.csrf().disable();
+		.addFilterBefore(new DemoAuthenticationFilter(), BasicAuthenticationFilter.class);
+			*/
+        //.addFilterBefore(new JwtAuthenticationFilter(tokenAuthenticationService),
+        	//	UsernamePasswordAuthenticationFilter.class);
+		http
+        .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()            
+        .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            //.exceptionHandling().authenticationEntryPoint(badAuthenticationFilter)
+            //.and()            
+        .csrf().disable()
+        //    .and()
+        .authorizeRequests()
+        	.antMatchers(HttpMethod.POST, "/user").permitAll()
+        	.antMatchers(HttpMethod.POST, "/login").permitAll()
+        .anyRequest()
+            .fullyAuthenticated();
+		
+
 	}
 
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		// auth.inMemoryAuthentication().withUser("user").password("password").roles("USER");
-	}
+   
 }

@@ -1,6 +1,7 @@
 package com.concrete.authentication.domain;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,9 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.validation.Errors;
+
+import com.concrete.authentication.repository.UserRepository;
+import com.concrete.authentication.service.PasswordService;
 
 @Entity
 public class User {
@@ -33,6 +37,10 @@ public class User {
 
 	@Transient
 	private Errors errors;
+
+	private Date dateCreated;
+
+	private Date dateModified;
 
 	public String getId() {
 		return id;
@@ -145,5 +153,39 @@ public class User {
 
 		return this;
 	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	public Date getDateModified() {		
+		return dateModified;
+	}
+
+	public void setDateModified(Date dateModified) {
+		this.dateModified = dateModified;
+	}
+	
+	public User setInitialDates(Date date) {
+				
+		this.setDateCreated(date);
+		this.setDateModified(date);
+		
+		return this;
+	}
+	
+	public User AndCryptPasswordWith(PasswordService passwordService) {
+		this.password = passwordService.crypt(this.password);
+		return this;
+	}
+	
+	public User thenSaveIn(UserRepository repository) {
+		return repository.save(this);
+	}
+	
 
 }
