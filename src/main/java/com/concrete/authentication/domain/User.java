@@ -138,6 +138,16 @@ public class User {
 		}
 		return this;
 	}
+	
+	public User isEmailUniqueIn(UserRepository userRepository) {
+		if (this.email != null && !this.email.isEmpty()) {
+			List<User> users = userRepository.findByEmail(this.email);
+			if (users != null && !users.isEmpty()) {
+				errors.rejectValue("email", "msg.user.email.unique");
+			}
+		}
+		return this;
+	}
 
 	public User verifyPassword() {
 		if (this.password == null) {
