@@ -48,4 +48,4 @@ POST /login
 GET /user/{id}
 
     header: 
-    X-AUTH-TOKEN: {token retornado no login ou no cadastrado}
+    X-AUTH-TOKEN: {token retornado no login ou no cadastro}
