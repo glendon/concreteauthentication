@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,12 +57,16 @@ public class UserController {
 		return new ResponseEntity<UserJson>(userJson, HttpStatus.OK);
 	}
 
-	@RequestMapping(path = "/user", method = GET)
-	public @ResponseBody ResponseEntity<UserJson> show() {	
+	@RequestMapping(path = "/user/{id}", method = GET)
+	public @ResponseBody ResponseEntity<UserJson> show(@PathVariable String id) {	
 
-		UserJson userJson = userService.getSessionUser();
+		UserJson userJson = userService.getUser(id);
 
-		return new ResponseEntity<UserJson>(userJson, HttpStatus.OK);
+		if (userJson != null) {
+			return new ResponseEntity<UserJson>(userJson, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<UserJson>(userJson, HttpStatus.NOT_FOUND);
+		}
 	}
 	
 }

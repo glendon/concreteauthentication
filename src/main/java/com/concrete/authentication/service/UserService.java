@@ -47,4 +47,17 @@ public class UserService {
 		
 		return new UserJson(user, authentication.getDateTokenCreated(), authentication.getToken());
 	}
+	
+	public UserJson getUser(String id) {
+		
+		UserAuthentication authentication = (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
+		User user = userRepository.findOne(id);
+		
+		if (user != null) {
+			return new UserJson(user, authentication.getDateTokenCreated(), authentication.getToken());
+		} else {
+			return null;
+		}
+		
+	}
 }
